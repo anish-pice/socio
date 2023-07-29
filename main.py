@@ -14,17 +14,20 @@ app = FastAPI()
 
 
 @app.get("/")
-def ServerUp():
+def ServerUp(): 
 
     return {"response": "Hellow World"}
 
 
 @app.post("/signup")
 def signup(requestDto: UserLogin):
+    
     userModel = User
     userModel.Email = requestDto.Email
     userModel.Id = uuid.uuid1()
-    userModel.Password = bcrypt.hashpw(userModel.Password, salt)
+
+    print(requestDto)
+    userModel.Password = bcrypt.hashpw(requestDto.Password, salt)
     cur.execute("INSERT INTO users VALUES(%s,%s,%s)",
                 userModel.Id, userModel.Email, userModel.Password)
 
@@ -53,4 +56,4 @@ def signin(UserLoginModel: UserLogin):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000,  log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=8000,  log_level="info", reload=True)
